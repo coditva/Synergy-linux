@@ -1,7 +1,9 @@
 #include <stdio.h>
 
+#include "server.h"
+
 int main(int argc, char *argv[])
 {
-    printf("Hello, world\n");
+    server_create();
     return 0;
 }
