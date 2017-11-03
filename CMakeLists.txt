@@ -35,5 +35,9 @@ set(PROJECT_SOURCES
     src/device.c
 )
 
+# Add subdirectory for plugins
+add_subdirectory("plugins")
+
+# Add executable
 add_executable (${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${PROJECT_LINKER_FLAGS})
