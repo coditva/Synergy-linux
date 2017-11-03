@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 
-#define PORT 3020
-#define HOST "127.0.0.1"
+#include "config.h"
+
 #define BACKLOG 10
 #define BUFFERSIZE 100
 

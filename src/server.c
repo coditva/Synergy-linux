@@ -4,10 +4,9 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 
+#include "config.h"
 #include "server.h"
 
-#define PORT 3020
-#define HOST "127.0.0.1"
 #define BACKLOG 10
 #define BUFFERSIZE 100
 
