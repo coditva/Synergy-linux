@@ -6,4 +6,6 @@
 
 #define SPECIALNUM 49267
 
+#define BACKLOG 10
+
 #endif /* end of include guard: CONFIG_H */

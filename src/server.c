@@ -7,9 +7,6 @@
 #include "config.h"
 #include "datatypes.h"
 #include "server.h"
-#include "device.h"
-
-#define BACKLOG 10
 
 int server_main;
 
@@ -35,32 +32,8 @@ void server_init()
     server_main = sockfd;
 }
 
-void server_accept()
+int server_new()
 {
-    int connfd;
-    message_t buffer;
-
-    while (1) {
-        /* create a socket for each connection request */
-        connfd = accept(server_main, NULL, NULL);
-
-        /* read the stream */
-        /* TODO: make it async */
-        while (read(connfd, &buffer, sizeof(message_t))) {
-            if (buffer.special_num != SPECIALNUM)   /* not a message */
-                break;
-
-            switch (buffer.type) {
-                case MT_HELLO:
-                    device_new(buffer.message);
-                    break;
-                case MT_PAIR:
-                    device_pair(buffer.message);
-                    break;
-                default:
-                    printf("%s\n", "Error!");
-            }
-        }
-        close(connfd);
-    }
+    /* TODO: store peer details too */
+    return accept(server_main, NULL, NULL);
 }
