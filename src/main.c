@@ -4,6 +4,7 @@
 #include "config.h"
 #include "server.h"
 #include "datatypes.h"
+#include "plugin.h"
 #include "device.h"
 
 int main(int argc, char *argv[])
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
     int connfd;
 
     server_init();
+    plugin_load("get_notif");
 
     while (1) {
         connfd = server_new();

@@ -1,7 +1,6 @@
 #include <stdio.h>
 
-int main(int argc, char *argv[])
-{
-    printf("Hi there\n");
-    return 0;
+int plugin_get_notif_init() {
+    printf("inside Get_notif_init\n");
+    return 1;
 }

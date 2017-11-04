@@ -16,4 +16,6 @@ typedef struct message_struct {
     char message[MAXMESSAGE];
 } message_t;
 
+typedef int (*init_func_t)(void);
+
 #endif /* end of include guard: DATATYPES_H */

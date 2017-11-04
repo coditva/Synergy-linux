@@ -20,7 +20,7 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # Add compiler flags
 set(PROJECT_DEBUG_FLAGS "-g")
-set(PROJECT_LINKER_FLAGS "")
+set(PROJECT_LINKER_FLAGS "-ldl")
 set(PROJECT_SOURCE_FLAGS "-ansi -std=c99 -pedantic -Wall")
 set(CMAKE_C_FLAGS " \
     ${PROJECT_DEBUG_FLAGS} \
@@ -33,6 +33,7 @@ set(PROJECT_SOURCES
     src/main.c
     src/server.c
     src/device.c
+    src/plugin.c
 )
 
 # Add subdirectory for plugins
