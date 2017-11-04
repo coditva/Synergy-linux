@@ -9,6 +9,13 @@ enum message_type {
     MT_PAIR,
 };
 
+enum event_type {
+    ET_DEVICE_NEW,
+    ET_DEVICE_PAIR,
+    ET_NOTIFICATION,
+    ET_COMMAND,
+};
+
 /* TODO: optimize this data struct */
 typedef struct message_struct {
     int special_num;
@@ -17,5 +24,10 @@ typedef struct message_struct {
 } message_t;
 
 typedef int (*plugin_init_func_t)(void);
+
+typedef struct event_struct {
+    enum event_type type;
+} event_t;
+    
 
 #endif /* end of include guard: DATATYPES_H */

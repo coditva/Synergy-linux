@@ -6,6 +6,7 @@
 #include "datatypes.h"
 #include "plugin.h"
 #include "device.h"
+#include "event.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,10 +32,12 @@ int main(int argc, char *argv[])
 
             switch (buffer.type) {
                 case MT_HELLO:
+                    event_emit(ET_DEVICE_NEW);
                     read(connfd, &buffer, sizeof(message_t));
                     device_new(buffer.message);
                     break;
                 case MT_PAIR:
+                    event_emit(ET_DEVICE_PAIR);
                     device_pair(buffer.message);
                     break;
                 default:

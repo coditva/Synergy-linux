@@ -34,6 +34,7 @@ set(PROJECT_SOURCES
     src/server.c
     src/device.c
     src/plugin.c
+    src/event.c
 )
 
 # Add subdirectory for plugins
