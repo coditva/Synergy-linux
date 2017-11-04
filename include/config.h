@@ -4,4 +4,6 @@
 #define PORT 3020
 #define HOST "127.0.0.1"
 
+#define SPECIALNUM 49267
+
 #endif /* end of include guard: CONFIG_H */

@@ -5,18 +5,18 @@
 #include <arpa/inet.h>
 
 #include "config.h"
+#include "datatypes.h"
 #include "server.h"
+#include "device.h"
 
 #define BACKLOG 10
-#define BUFFERSIZE 100
 
-void server_create()
+int server_main;
+
+void server_init()
 {
-    int sockfd, connfd;
+    int sockfd;
     struct sockaddr_in addr;                        /* socket config */
-    struct sockaddr peer_addr;                      /* peer details */
-    socklen_t peer_addr_size;
-    char buffer[BUFFERSIZE];
     
     /* create a socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -32,11 +32,35 @@ void server_create()
 
     /* mark socket as passive, which will accept connections later */
     listen(sockfd, BACKLOG);
+    server_main = sockfd;
+}
 
-    /* create a socket for each connection request */
-    connfd = accept(sockfd, &peer_addr, &peer_addr_size);
+void server_accept()
+{
+    int connfd;
+    message_t buffer;
 
-    while (read(connfd, buffer, BUFFERSIZE)) {
-        printf("%s\n", buffer);
+    while (1) {
+        /* create a socket for each connection request */
+        connfd = accept(server_main, NULL, NULL);
+
+        /* read the stream */
+        /* TODO: make it async */
+        while (read(connfd, &buffer, sizeof(message_t))) {
+            if (buffer.special_num != SPECIALNUM)   /* not a message */
+                break;
+
+            switch (buffer.type) {
+                case MT_HELLO:
+                    device_new(buffer.message);
+                    break;
+                case MT_PAIR:
+                    device_pair(buffer.message);
+                    break;
+                default:
+                    printf("%s\n", "Error!");
+            }
+        }
+        close(connfd);
     }
 }

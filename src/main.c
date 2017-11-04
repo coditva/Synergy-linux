@@ -4,6 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-    server_create();
+    server_init();
+    server_accept();
     return 0;
 }

@@ -32,6 +32,7 @@ set(CMAKE_C_FLAGS " \
 set(PROJECT_SOURCES
     src/main.c
     src/server.c
+    src/device.c
 )
 
 add_executable (${PROJECT_NAME} ${PROJECT_SOURCES})
