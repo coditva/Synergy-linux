@@ -5,6 +5,7 @@
 
 enum message_type {
     MT_HELLO,
+    MT_NEW,
     MT_PAIR,
 };
 

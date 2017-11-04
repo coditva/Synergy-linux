@@ -15,6 +15,11 @@ int main(int argc, char *argv[])
 
     while (1) {
         connfd = server_new();
+        if (connfd == -1) {
+            printf("Fuck!\n");
+        } else {
+            printf("New connection\n");
+        }
 
         /* read the stream */
         /* TODO: make it async */
@@ -24,6 +29,7 @@ int main(int argc, char *argv[])
 
             switch (buffer.type) {
                 case MT_HELLO:
+                    read(connfd, &buffer, sizeof(message_t));
                     device_new(buffer.message);
                     break;
                 case MT_PAIR:

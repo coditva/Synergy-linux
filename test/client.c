@@ -1,13 +1,13 @@
 #include <unistd.h>
 #include <netinet/ip.h>
 #include <strings.h>
+#include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <arpa/inet.h>
 
 #include "config.h"
-
-#define BACKLOG 10
-#define BUFFERSIZE 100
+#include "datatypes.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in addr;                        /* socket config */
     struct sockaddr peer_addr;                      /* peer details */
     socklen_t peer_addr_size;
-    char buffer[BUFFERSIZE];
+    message_t buffer;
     
     /* create a socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -30,7 +30,12 @@ int main(int argc, char *argv[])
     connect(sockfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_in));
 
     while (1) {
-        scanf("%s", &buffer);
-        write(sockfd, buffer, BUFFERSIZE);
+        scanf("%s", buffer.message);
+        buffer.special_num = SPECIALNUM;
+        buffer.type = MT_HELLO;
+        write(sockfd, &buffer, sizeof(message_t));
+        buffer.type = MT_NEW;
+        strcpy(buffer.message, "Register this new device");
+        write(sockfd, &buffer, sizeof(message_t));
     }
 }
