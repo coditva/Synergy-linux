@@ -31,15 +31,23 @@ int main(int argc, char *argv[])
                 break;
 
             switch (buffer.type) {
+
                 case MT_HELLO:
                     event_emit(ET_DEVICE_NEW);
                     read(connfd, &buffer, sizeof(message_t));
                     device_new(buffer.message);
                     break;
+
                 case MT_PAIR:
                     event_emit(ET_DEVICE_PAIR);
+                    read(connfd, &buffer, sizeof(message_t));
                     device_pair(buffer.message);
                     break;
+
+                case MT_CONNECT:
+                    read(connfd, &buffer, sizeof(message_t));
+                    device_connect(buffer.message);
+
                 default:
                     printf("%s\n", "Error!");
             }

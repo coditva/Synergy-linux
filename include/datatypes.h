@@ -7,11 +7,14 @@ enum message_type {
     MT_HELLO,
     MT_NEW,
     MT_PAIR,
+    MT_CONNECT,
 };
 
 typedef enum event_type {
     ET_DEVICE_NEW,
     ET_DEVICE_PAIR,
+    ET_DEVICE_CONNECTED,
+    ET_DEVICE_DISCONNECTED,
     ET_NOTIFICATION,
     ET_COMMAND,
     ET_SIZE

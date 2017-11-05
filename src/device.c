@@ -11,3 +11,8 @@ void device_pair(char *device_msg)
 {
     printf("PAIR: %s\n", device_msg);
 }
+
+void device_connect(char *device_info)
+{
+    printf("CONNECT: %s\n", device_info);
+}
