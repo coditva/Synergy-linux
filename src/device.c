@@ -38,6 +38,7 @@ void device_pair(int devicefd)
     close(fd);
 
     /* send it back */
+    printf("Sending dev id\n");
     strcpy(buffer.message, device.id);
     write(devicefd, &buffer, sizeof(message_t));
 }
@@ -49,6 +50,9 @@ void device_connect(char *device_info)
 
 device_t * device_get(char *device_id)
 {
+    if (device_id == NULL || !strcmp(device_id, "")) {
+        return NULL;
+    }
     char filename[200] = "synergy/devices/";
     strcat(filename, device_id);
     int devfd = open(filename, O_RDONLY);

@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
                     break;
 
                 case MT_PAIR:
+                    printf("Pairing\n");
                     event_emit(ET_DEVICE_PAIR);
                     device_pair(connfd);
                     break;
@@ -53,6 +54,7 @@ int main(int argc, char *argv[])
                 case MT_CONNECT:
                     read(connfd, &buffer, sizeof(message_t));
                     device_connect(buffer.message);
+                    break;
 
                 default:
                     printf("%s\n", "Error!");
