@@ -50,6 +50,10 @@ int main(int argc, char *argv[])
                     break;
 
                 case MT_NOTIFICATION:
+                    if (!device_is_paired(buffer.device_id)) {
+                        printf("Device is not paired\n");
+                        continue;
+                    }
                     printf("Notif: %s\n", buffer.message);
                     break;
 

@@ -50,16 +50,38 @@ void device_connect(char *device_info)
 
 device_t * device_get(char *device_id)
 {
+    device_t *device = (device_t *) malloc(sizeof(device_t));
+
     if (device_id == NULL || !strcmp(device_id, "")) {
         return NULL;
     }
     char filename[200] = "synergy/devices/";
     strcat(filename, device_id);
+
     int devfd = open(filename, O_RDONLY);
     if (devfd == -1) {
         return NULL;
     }
-    device_t *device = (device_t *) malloc(sizeof(device_t));
+
+    close(devfd);
     read(devfd, device, sizeof(device_t));
     return device;
+}
+
+int device_is_paired(char *device_id)
+{
+    if (device_id == NULL || !strcmp(device_id, "")) {
+        return 0;
+    }
+
+    char filename[200] = "synergy/devices/";
+    strcat(filename, device_id);
+
+    int devfd = open(filename, O_RDONLY);
+    if (devfd == -1) {
+        return 0;
+    }
+
+    close(devfd);
+    return 1;
 }
