@@ -17,4 +17,7 @@
 /* maximum size for message */
 #define MAXMESSAGE 100
 
+/* maximum simultaneous devices */
+#define MAXDEVS 5
+
 #endif /* end of include guard: CONFIG_H */
