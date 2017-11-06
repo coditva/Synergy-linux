@@ -33,12 +33,12 @@ typedef int (*plugin_init_func_t)(void);
 typedef struct event_struct {
     enum event_type type;
 } event_t;
-
-typedef void (*event_handler_t)(void);
     
 typedef struct device_struct {
     char *id;
     int fd;
 } device_t;
+
+typedef int (*event_handler_t)(message_t *);
 
 #endif /* end of include guard: DATATYPES_H */

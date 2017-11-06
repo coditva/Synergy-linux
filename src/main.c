@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 
                 case MT_PAIR:                   /* pair the device */
                     printf("Pairing\n");
-                    event_emit(ET_DEVICE_PAIR);
                     device_pair(connfd);
                     break;
 
@@ -54,7 +53,7 @@ int main(int argc, char *argv[])
                         printf("Device is not paired\n");
                         continue;
                     }
-                    printf("Notif: %s\n", buffer.message);
+                    event_emit(ET_NOTIFICATION, buffer);
                     break;
 
                 default:

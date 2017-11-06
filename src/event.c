@@ -15,13 +15,15 @@ struct event_item_list {
 } event_list[ET_SIZE];
 
 
-void event_emit(event_type_t event_type)
+void event_emit(event_type_t event_type, message_t message)
 {
     struct event_item *item = event_list[event_type].top;
 
+    printf("Event: %d\n", event_type);
+
     /* TODO: make it async */
     while (item != NULL) {
-        (*(item -> handler))();
+        (*(item -> handler))(&message);
         item = item -> next;
     }
 }
