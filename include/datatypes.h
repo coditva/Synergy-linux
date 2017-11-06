@@ -35,5 +35,9 @@ typedef struct event_struct {
 
 typedef void (*event_handler_t)(void);
     
+typedef struct device_struct {
+    char *id;
+    int fd;
+} device_t;
 
 #endif /* end of include guard: DATATYPES_H */

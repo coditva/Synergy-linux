@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 {
     message_t buffer;
     int connfd;
+    device_t *device;
 
     server_init();
     plugin_load("get_notif");
@@ -33,9 +34,15 @@ int main(int argc, char *argv[])
             switch (buffer.type) {
 
                 case MT_HELLO:
-                    event_emit(ET_DEVICE_NEW);
-                    read(connfd, &buffer, sizeof(message_t));
-                    device_new(buffer.message);
+                    /* check if device is paired */
+                    device = device_get(buffer.message);
+                    if (device) {
+                        /* device exists as paired */
+                        printf("HELLO: Existing\n");
+                    } else {
+                        /* device is new */
+                        printf("HELLO: New\n");
+                    }
                     break;
 
                 case MT_PAIR:
