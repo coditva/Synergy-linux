@@ -28,30 +28,24 @@ int main(int argc, char *argv[])
         /* read the stream */
         /* TODO: make it async */
         while (read(connfd, &buffer, sizeof(message_t))) {
-            if (buffer.special_num != SPECIALNUM)   /* not a message */
-                break;
+            if (buffer.special_num != SPECIALNUM)
+                break;                          /* not a message */
 
             switch (buffer.type) {
 
-                case MT_HELLO:
-                    /* check if device is paired */
+                case MT_HELLO:                  /* check if device is known */
                     device = device_get(buffer.message);
-                    if (device) {
-                        /* device exists as paired */
-                        printf("HELLO: Existing\n");
-                    } else {
-                        /* device is new */
-                        printf("HELLO: New\n");
-                    }
+                    if (device) printf("HELLO: Exists\n"); /* device known */
+                    else printf("HELLO: New\n"); /* device is new */
                     break;
 
-                case MT_PAIR:
+                case MT_PAIR:                   /* pair the device */
                     printf("Pairing\n");
                     event_emit(ET_DEVICE_PAIR);
                     device_pair(connfd);
                     break;
 
-                case MT_CONNECT:
+                case MT_CONNECT:                /* set a socket for device */
                     read(connfd, &buffer, sizeof(message_t));
                     device_connect(buffer.message);
                     break;
