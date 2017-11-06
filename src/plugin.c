@@ -6,6 +6,11 @@
 #include "plugin.h"
 #include "datatypes.h"
 
+/*
+ * Loads the plugin code and runs the init function for it
+ * @param const char * the plugin to be loaded
+ * @return int 1 if plugin loaded, 0 if not
+ */
 int plugin_load(const char *plugin_name)
 {
     char *plugin_path;
@@ -22,7 +27,7 @@ int plugin_load(const char *plugin_name)
     void *handle = dlopen(plugin_path, RTLD_NOW);
     if (!handle) {
         printf("Fuck\n");
-        return 1;
+        return 0;
     }
 
     /* compute plugin init function path */

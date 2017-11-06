@@ -1,14 +1,20 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/* the host and port to be used for connection */
 #define PORT 3020
 #define HOST "127.0.0.1"
 
+/* a number which is sent with every request from other devices */
 #define SPECIALNUM 49267
 
+/* maximum connections waiting for server */
 #define BACKLOG 10
 
+/* size of hash for device id */
 #define HASHSIZE 100
+
+/* maximum size for message */
 #define MAXMESSAGE 100
 
 #endif /* end of include guard: CONFIG_H */

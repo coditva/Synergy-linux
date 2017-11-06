@@ -8,8 +8,12 @@
 #include "datatypes.h"
 #include "server.h"
 
+/* store the server file descriptor */
 int server_main;
 
+/*
+ * Make the server listen passively on the host and port given in the config.h
+ */
 void server_init()
 {
     int sockfd;
@@ -32,6 +36,10 @@ void server_init()
     server_main = sockfd;
 }
 
+/*
+ * Return the top connection to the server from the waiting list
+ * @return int file descriptor for the socket
+ */
 int server_new()
 {
     /* TODO: store peer details too */

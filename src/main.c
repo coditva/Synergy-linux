@@ -14,13 +14,17 @@ int main(int argc, char *argv[])
     int connfd;
     device_t *device;
 
+    /* start the server */
     server_init();
+
+    /* load plugins */
     plugin_load("get_notif");
 
     while (1) {
+        /* get a new connection */
         connfd = server_new();
         if (connfd == -1) {
-            printf("Fuck!\n");
+            printf("Connection error\n");
         } else {
             printf("New connection\n");
         }
@@ -45,7 +49,7 @@ int main(int argc, char *argv[])
                     break;
 
                 case MT_CONNECT:                /* set a socket for device */
-                    device_connect(buffer.message);
+                    /* TODO */
                     break;
 
                 case MT_NOTIFICATION:

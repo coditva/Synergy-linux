@@ -1,10 +1,13 @@
 #ifndef DEVICE_H
 #define DEVICE_H
 
-void device_new(char *device_info);
+/* pair a device */
 void device_pair(int devicefd);
-void device_connect(char *device_info);
+
+/* return device info for a device id */
 device_t * device_get(char *device_id);
+
+/* return 1 if device is paired, 0 otherwise */
 int device_is_paired(char *device_id);
 
 #endif /* end of include guard: DEVICE_H */

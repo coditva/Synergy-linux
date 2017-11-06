@@ -9,15 +9,17 @@
 #include "datatypes.h"
 #include "device.h"
 
-void device_new(char *device_info)
-{
-    printf("NEW: %s\n", device_info);
-}
-
+/*
+ * Creates a file in /devices with a generated device id. Does nothing if
+ * already paired
+ * @param int devicefd file descriptor for the device
+ */
 void device_pair(int devicefd)
 {
     message_t buffer;
     device_t device;
+    char filename[200] = "synergy/devices/";
+    int fd;
 
     /* TODO: ask if want to pair */
 
@@ -25,14 +27,13 @@ void device_pair(int devicefd)
     device.id = (char *) malloc(HASHSIZE);
     strcpy(device.id, "thisissomeverybighashusedasdeviceid");
 
-    char filename[200] = "synergy/devices/";
     strcat(filename, device.id);
 
     /* save it in assoc with the device */
     mkdir("synergy/devices", S_IRWXU | S_IRGRP | S_IROTH);
 
     /* create a device for it */
-    int fd = open(filename, O_RDWR | O_CREAT | O_EXCL, S_IRUSR);
+    fd = open(filename, O_RDWR | O_CREAT | O_EXCL, S_IRUSR);
     if (fd == -1) { printf("Device exists\n"); }
     write(fd, &device, sizeof(device_t));
     close(fd);
@@ -43,22 +44,25 @@ void device_pair(int devicefd)
     write(devicefd, &buffer, sizeof(message_t));
 }
 
-void device_connect(char *device_info)
-{
-    printf("CONNECT: %s\n", device_info);
-}
-
+/*
+ * Reads the file in /devices and returns the device info for the given
+ * device id
+ * @param char* device_id
+ * @return device_t* the device info
+ */
 device_t * device_get(char *device_id)
 {
     device_t *device = (device_t *) malloc(sizeof(device_t));
+    char filename[200] = "synergy/devices/";
+    int devfd;
 
     if (device_id == NULL || !strcmp(device_id, "")) {
         return NULL;
     }
-    char filename[200] = "synergy/devices/";
     strcat(filename, device_id);
 
-    int devfd = open(filename, O_RDONLY);
+    /* check if it can be opened */
+    devfd = open(filename, O_RDONLY);
     if (devfd == -1) {
         return NULL;
     }
@@ -68,16 +72,23 @@ device_t * device_get(char *device_id)
     return device;
 }
 
+/*
+ * Checks if file with the device id exists and returns 1 if it does and 0
+ * otherwise
+ * @param char* the device id to be checked for
+ * @return int 1 if exists, 0 if not
+ */
 int device_is_paired(char *device_id)
 {
+    char filename[200] = "synergy/devices/";
+    int devfd;
+
     if (device_id == NULL || !strcmp(device_id, "")) {
         return 0;
     }
-
-    char filename[200] = "synergy/devices/";
     strcat(filename, device_id);
 
-    int devfd = open(filename, O_RDONLY);
+    devfd = open(filename, O_RDONLY);
     if (devfd == -1) {
         return 0;
     }
