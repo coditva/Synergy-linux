@@ -37,5 +37,11 @@ int main(int argc, char *argv[])
         buffer.type = MT_NEW;
         strcpy(buffer.message, "Register this new device");
         write(sockfd, &buffer, sizeof(message_t));
+
+        buffer.type = MT_PAIR;
+        strcpy(buffer.message, "Pair this device");
+        write(sockfd, &buffer, sizeof(message_t));
+        read(sockfd, &buffer, sizeof(message_t));
+        printf("PAIRED: hash = %s\n", buffer.message);
     }
 }

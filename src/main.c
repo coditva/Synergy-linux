@@ -40,8 +40,7 @@ int main(int argc, char *argv[])
 
                 case MT_PAIR:
                     event_emit(ET_DEVICE_PAIR);
-                    read(connfd, &buffer, sizeof(message_t));
-                    device_pair(buffer.message);
+                    device_pair(connfd);
                     break;
 
                 case MT_CONNECT:
