@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
             switch (buffer.type) {
 
                 case MT_HELLO:                  /* check if device is known */
-                    device = device_get(buffer.message);
+                    device = device_get(buffer.device_id);
                     if (device) printf("HELLO: Exists\n"); /* device known */
                     else printf("HELLO: New\n"); /* device is new */
                     break;
@@ -46,8 +46,11 @@ int main(int argc, char *argv[])
                     break;
 
                 case MT_CONNECT:                /* set a socket for device */
-                    read(connfd, &buffer, sizeof(message_t));
                     device_connect(buffer.message);
+                    break;
+
+                case MT_NOTIFICATION:
+                    printf("Notif: %s\n", buffer.message);
                     break;
 
                 default:

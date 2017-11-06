@@ -9,5 +9,6 @@
 #define BACKLOG 10
 
 #define HASHSIZE 100
+#define MAXMESSAGE 100
 
 #endif /* end of include guard: CONFIG_H */

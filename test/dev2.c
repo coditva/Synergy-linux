@@ -29,16 +29,32 @@ int main(int argc, char *argv[])
     /* connect to the server */
     connect(sockfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_in));
 
+    /* set special number */
+    buffer.special_num = SPECIALNUM;
+
+    /* send hello */
+    printf("This is a new device\n");
+    printf("Sending HELLO\n");
+    buffer.type = MT_HELLO;
+    write(sockfd, &buffer, sizeof(message_t));
+
+    /* send pair */
+    printf("Sending PAIR\n");
+    buffer.type = MT_PAIR;
+    strcpy(buffer.message, "some device stats");
+    write(sockfd, &buffer, sizeof(message_t));
+
+    /* read the device id */
+    read(sockfd, &buffer, sizeof(message_t));
+    printf("Dev id: %s\n", buffer.message);
+    strcpy(buffer.device_id, buffer.message);
+
+    /* send a notification */
+    buffer.special_num = SPECIALNUM;
+    buffer.type = MT_NOTIFICATION;
     while (1) {
         scanf("%s", buffer.message);
         buffer.special_num = SPECIALNUM;
-        buffer.type = MT_HELLO;
         write(sockfd, &buffer, sizeof(message_t));
-
-        buffer.type = MT_PAIR;
-        strcpy(buffer.message, "Pair this device");
-        write(sockfd, &buffer, sizeof(message_t));
-        read(sockfd, &buffer, sizeof(message_t));
-        printf("PAIRED: hash = %s\n", buffer.message);
     }
 }

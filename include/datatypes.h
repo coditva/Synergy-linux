@@ -1,12 +1,13 @@
 #ifndef DATATYPES_H
 #define DATATYPES_H
 
-#define MAXMESSAGE 100
+#include "config.h"
 
 enum message_type {
     MT_HELLO,
     MT_PAIR,
     MT_CONNECT,
+    MT_NOTIFICATION,
 };
 
 typedef enum event_type {
@@ -22,6 +23,7 @@ typedef enum event_type {
 /* TODO: optimize this data struct */
 typedef struct message_struct {
     int special_num;
+    char device_id[HASHSIZE];
     enum message_type type;
     char message[MAXMESSAGE];
 } message_t;
