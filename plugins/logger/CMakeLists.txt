@@ -12,4 +12,4 @@ set(CMAKE_C_FLAGS " \
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/synergy/plugins)
 
 # The plugin should always export a single binary with a .so extension
-add_executable (${PLUGIN_NAME}.so plugin.c)
+add_executable (${PLUGIN_NAME} plugin.c)

@@ -10,8 +10,6 @@ int echo_notif(message_t *message)
 }
 
 int plugin_get_notif_init() {
-    printf("inside Get_notif_init\n");
-
     event_attach(ET_NOTIFICATION, echo_notif);
     return 1;
 }

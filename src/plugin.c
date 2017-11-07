@@ -2,6 +2,7 @@
 #include <dlfcn.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #include "plugin.h"
 #include "datatypes.h"
@@ -20,13 +21,11 @@ int plugin_load(const char *plugin_name)
     plugin_path = (char *) malloc(sizeof("synergy/plugins/.so") + sizeof(plugin_name));
     strcpy(plugin_path, "synergy/plugins/");
     strcat(plugin_path, plugin_name);
-    strcat(plugin_path, ".so");
-    printf("%s\n", plugin_path);
 
     /* open the plugin */
     void *handle = dlopen(plugin_path, RTLD_NOW);
     if (!handle) {
-        printf("Fuck\n");
+        printf("Could not load plugin: %s\n", plugin_name);
         return 0;
     }
 
@@ -40,9 +39,40 @@ int plugin_load(const char *plugin_name)
     plugin_init_func_t plugin_init_func = (plugin_init_func_t) (__intptr_t)
         dlsym(handle, function_name);
 
+    /* if function address was not found */
+    if (plugin_init_func == NULL) {
+        printf("Could not load plugin: %s\n", plugin_name);
+        return 0;
+    }
+
     /* run the plugin init function */
     (*plugin_init_func)();
 
-    printf("Loaded plugins: %s\n", plugin_name);
     return 1;
+}
+
+/*
+ * Searches the plugins directory and loads all the plugins it can find
+ */
+void plugin_discover()
+{
+    DIR *plugins_dir;
+    struct dirent *dir_entry;
+
+    /* open plugins directory */
+    if ((plugins_dir = opendir("synergy/plugins")) == NULL) {
+        printf("Could not find plugins dir\n");
+        return;
+    }
+
+    /* load each plugin */
+    while ((dir_entry = readdir(plugins_dir)) != NULL) {
+
+        if (strcmp(dir_entry -> d_name, ".") &&
+                strcmp(dir_entry -> d_name, "..")) {
+
+            printf("Loading plugin: %s\n", dir_entry -> d_name);
+            plugin_load(dir_entry -> d_name);
+        }
+    }
 }

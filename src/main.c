@@ -32,8 +32,7 @@ int main(int argc, char *argv[])
     server_init();
 
     /* load plugins */
-    plugin_load("get_notif");
-    plugin_load("logger");
+    plugin_discover();
 
     /* init thread attributes */
     pthread_attr_init(&attr);
