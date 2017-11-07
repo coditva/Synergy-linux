@@ -35,6 +35,7 @@ set(PROJECT_SOURCES
     src/device.c
     src/plugin.c
     src/event.c
+    src/interface.c
 )
 
 # Add subdirectory for plugins

@@ -18,10 +18,8 @@ void device_pair(int devicefd)
 {
     message_t buffer;
     device_t device;
-    char filename[200] = "synergy/devices/";
+    char filename[20 + HASHSIZE] = "synergy/devices/";
     int fd;
-
-    /* TODO: ask if want to pair */
 
     /* TODO: generate a hash */
     device.id = (char *) malloc(HASHSIZE);

@@ -9,6 +9,7 @@
 #include "plugin.h"
 #include "device.h"
 #include "event.h"
+#include "interface.h"
 
 /* manage the connection as threads */
 void * connection_manager(void *args);
@@ -109,8 +110,10 @@ void * connection_manager(void *args)
                 break;
 
             case MT_PAIR:                   /* pair the device */
-                event_emit(ET_DEVICE_PAIR, buffer);
-                device_pair(connfd);
+                if(interface_ask_yes_no("Do you want to pair?", "Yeah!", "Nah!")) {
+                    device_pair(connfd);
+                    event_emit(ET_DEVICE_PAIR, buffer);
+                }
                 break;
 
             case MT_NOTIFICATION:           /* device sends a notification */
