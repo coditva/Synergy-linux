@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 
     /* load plugins */
     plugin_load("get_notif");
+    plugin_load("logger");
 
     /* init thread attributes */
     pthread_attr_init(&attr);
@@ -117,6 +118,7 @@ void * connection_manager(void *args)
                 if (!device_is_paired(buffer.device_id)) {
                     continue;
                 }
+                was_connected = 1;
                 event_emit(ET_NOTIFICATION, buffer);
                 break;
 
