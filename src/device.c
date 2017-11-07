@@ -34,12 +34,14 @@ void device_pair(int devicefd)
 
     /* create a device for it */
     fd = open(filename, O_RDWR | O_CREAT | O_EXCL, S_IRUSR);
-    if (fd == -1) { printf("Device exists\n"); }
-    write(fd, &device, sizeof(device_t));
-    close(fd);
+    if (fd == -1) {
+        printf("Device exists\n");
+    } else {
+        write(fd, &device, sizeof(device_t));
+        close(fd);
+    }
 
     /* send it back */
-    printf("Sending dev id\n");
     strcpy(buffer.message, device.id);
     write(devicefd, &buffer, sizeof(message_t));
 }
@@ -52,7 +54,7 @@ void device_pair(int devicefd)
  */
 device_t * device_get(char *device_id)
 {
-    device_t *device = (device_t *) malloc(sizeof(device_t));
+    device_t *device;
     char filename[200] = "synergy/devices/";
     int devfd;
 
@@ -67,8 +69,11 @@ device_t * device_get(char *device_id)
         return NULL;
     }
 
-    close(devfd);
+    /* load device details */
+    device = (device_t *) malloc(sizeof(device_t));
     read(devfd, device, sizeof(device_t));
+
+    close(devfd);
     return device;
 }
 

@@ -101,6 +101,7 @@ void * connection_manager(void *args)
                     /* device known */
                     was_connected = 1;
                     event_emit(ET_DEVICE_CONNECTED, buffer);
+                    free(device);
                 } else {
                     /* device is new */
                     event_emit(ET_DEVICE_NEW, buffer);

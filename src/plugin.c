@@ -16,6 +16,8 @@ int plugin_load(const char *plugin_name)
 {
     char *plugin_path;
     char *function_name;
+    void *handle;
+    plugin_init_func_t plugin_init_func;
 
     /* compute the plugin path */
     plugin_path = (char *) malloc(sizeof("synergy/plugins/.so") + sizeof(plugin_name));
@@ -23,11 +25,9 @@ int plugin_load(const char *plugin_name)
     strcat(plugin_path, plugin_name);
 
     /* open the plugin */
-    void *handle = dlopen(plugin_path, RTLD_NOW);
-    if (!handle) {
-        printf("Could not load plugin: %s\n", plugin_name);
-        return 0;
-    }
+    handle = dlopen(plugin_path, RTLD_NOW);
+    free(plugin_path);
+    if (!handle) return 0;
 
     /* compute plugin init function path */
     function_name = (char *) malloc(sizeof("plugin_init_") + sizeof(plugin_name));
@@ -36,18 +36,13 @@ int plugin_load(const char *plugin_name)
     strcat(function_name, "_init");
 
     /* get plugin init function address */
-    plugin_init_func_t plugin_init_func = (plugin_init_func_t) (__intptr_t)
+    plugin_init_func = (plugin_init_func_t) (__intptr_t)
         dlsym(handle, function_name);
-
-    /* if function address was not found */
-    if (plugin_init_func == NULL) {
-        printf("Could not load plugin: %s\n", plugin_name);
-        return 0;
-    }
+    free(function_name);
+    if (plugin_init_func == NULL) return 0;
 
     /* run the plugin init function */
     (*plugin_init_func)();
-
     return 1;
 }
 
@@ -71,8 +66,13 @@ void plugin_discover()
         if (strcmp(dir_entry -> d_name, ".") &&
                 strcmp(dir_entry -> d_name, "..")) {
 
-            printf("Loading plugin: %s\n", dir_entry -> d_name);
-            plugin_load(dir_entry -> d_name);
+            if(plugin_load(dir_entry -> d_name)) {
+                printf("Loading plugin: %s\n", dir_entry -> d_name);
+            } else {
+                printf("Could not load plugin: %s\n", dir_entry -> d_name);
+            }
         }
     }
+
+    closedir(plugins_dir);
 }

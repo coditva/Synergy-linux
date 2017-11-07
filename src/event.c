@@ -23,8 +23,6 @@ struct event_item_list {
 void event_emit(event_type_t event_type, message_t message)
 {
     struct event_item *item = event_list[event_type].top;
-
-    /* TODO: make it async */
     while (item != NULL) {
         (*(item -> handler))(&message);         /* run the handler */
         item = item -> next;                    /* increment */
