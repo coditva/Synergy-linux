@@ -80,35 +80,41 @@ void * connection_manager(void *args)
     message_t buffer;
     device_t *device;
     int *fd, connfd;
+    int was_connected = 0;
 
     fd = args;
     connfd = *fd;
 
     /* read the stream */
     while (read(connfd, &buffer, sizeof(message_t))) {
-        if (buffer.special_num != SPECIALNUM)
-            break;                          /* not a message */
+
+        /* check if message is intented for this app */
+        if (buffer.special_num != SPECIALNUM) {
+            break;
+        }
 
         switch (buffer.type) {
 
             case MT_HELLO:                  /* check if device is known */
                 device = device_get(buffer.device_id);
-                if (device) printf("HELLO: Exists\n"); /* device known */
-                else printf("HELLO: New\n"); /* device is new */
+                if (device) {
+                    /* device known */
+                    was_connected = 1;
+                    event_emit(ET_DEVICE_CONNECTED, buffer);
+                } else {
+                    /* device is new */
+                    event_emit(ET_DEVICE_NEW, buffer);
+                }
                 break;
 
             case MT_PAIR:                   /* pair the device */
-                printf("Pairing\n");
+                event_emit(ET_DEVICE_PAIR, buffer);
                 device_pair(connfd);
                 break;
 
-            case MT_CONNECT:                /* set a socket for device */
-                /* TODO */
-                break;
-
-            case MT_NOTIFICATION:
+            case MT_NOTIFICATION:           /* device sends a notification */
+                /* check if device is paired */
                 if (!device_is_paired(buffer.device_id)) {
-                    printf("Device is not paired\n");
                     continue;
                 }
                 event_emit(ET_NOTIFICATION, buffer);
@@ -118,6 +124,10 @@ void * connection_manager(void *args)
                 printf("%s\n", "Error!");
         }
     }
+
+    /* if a device was connected, send a disconnected signal */
+    if (was_connected) event_emit(ET_DEVICE_DISCONNECTED, buffer);
+
     close(connfd);
     return NULL;
 }
