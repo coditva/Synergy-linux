@@ -20,7 +20,7 @@ int plugin_load(const char *plugin_name)
     plugin_init_func_t plugin_init_func;
 
     /* compute the plugin path */
-    plugin_path = (char *) malloc(sizeof("synergy/plugins/.so") + sizeof(plugin_name));
+    plugin_path = (char *) malloc(sizeof("synergy/plugins/.so") + strlen(plugin_name));
     strcpy(plugin_path, "synergy/plugins/");
     strcat(plugin_path, plugin_name);
 
@@ -30,7 +30,7 @@ int plugin_load(const char *plugin_name)
     if (!handle) return 0;
 
     /* compute plugin init function path */
-    function_name = (char *) malloc(sizeof("plugin_init_") + sizeof(plugin_name));
+    function_name = (char *) malloc(sizeof("plugin_init_") + strlen(plugin_name));
     strcpy(function_name, "plugin_");
     strcat(function_name, plugin_name);
     strcat(function_name, "_init");
