@@ -72,28 +72,3 @@ device_t * device_get(char *device_id)
     close(devfd);
     return device;
 }
-
-/*
- * Checks if file with the device id exists and returns 1 if it does and 0
- * otherwise
- * @param char* the device id to be checked for
- * @return int 1 if exists, 0 if not
- */
-int device_is_paired(char *device_id)
-{
-    char filename[200] = "synergy/devices/";
-    int devfd;
-
-    if (device_id == NULL || !strcmp(device_id, "")) {
-        return 0;
-    }
-    strcat(filename, device_id);
-
-    devfd = open(filename, O_RDONLY);
-    if (devfd == -1) {
-        return 0;
-    }
-
-    close(devfd);
-    return 1;
-}
