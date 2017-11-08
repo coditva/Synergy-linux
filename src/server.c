@@ -42,6 +42,5 @@ void server_init()
  */
 int server_new()
 {
-    /* TODO: store peer details too */
     return accept(server_main, NULL, NULL);
 }
