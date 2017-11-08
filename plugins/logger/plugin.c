@@ -8,12 +8,12 @@ void logger(char *message)
     printf("Logger: %s\n", message);
 }
 
-int print_ev0(message_t *message) { logger("New device"); return 1; }
-int print_ev1(message_t *message) { logger("Pair device"); return 1; }
-int print_ev2(message_t *message) { logger("Device connected"); return 1; }
-int print_ev3(message_t *message) { logger("Device disconnected"); return 1; }
-int print_ev4(message_t *message) { logger("New notification"); return 1; }
-int print_ev5(message_t *message) { logger("New command"); return 1; }
+int print_ev0(payload_t *message) { logger("New device"); return 1; }
+int print_ev1(payload_t *message) { logger("Pair device"); return 1; }
+int print_ev2(payload_t *message) { logger("Device connected"); return 1; }
+int print_ev3(payload_t *message) { logger("Device disconnected"); return 1; }
+int print_ev4(payload_t *message) { logger("New notification"); return 1; }
+int print_ev5(payload_t *message) { logger("New command"); return 1; }
 
 int plugin_logger_init() {
 

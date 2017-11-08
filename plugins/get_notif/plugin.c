@@ -3,9 +3,9 @@
 #include "datatypes.h"
 #include "event.h"
 
-int echo_notif(message_t *message)
+int echo_notif(payload_t *payload)
 {
-    printf("Notif: %s\n", message -> message);
+    printf("Notif: %s\n", payload -> message.value);
     return 1;
 }
 

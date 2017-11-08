@@ -20,11 +20,11 @@ struct event_item_list {
  * @param event_type_t the type of event to emit
  * @param message_t the message received by the device
  */
-void event_emit(event_type_t event_type, message_t message)
+void event_emit(event_type_t event_type, payload_t *payload)
 {
     struct event_item *item = event_list[event_type].top;
     while (item != NULL) {
-        (*(item -> handler))(&message);         /* run the handler */
+        (*(item -> handler))(payload);          /* run the handler */
         item = item -> next;                    /* increment */
     }
 }

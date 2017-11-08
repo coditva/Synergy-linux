@@ -8,14 +8,17 @@
 
 #include "config.h"
 #include "datatypes.h"
+#include "payload.h"
 
 int main(int argc, char *argv[])
 {
     int sockfd, connfd;
     struct sockaddr_in addr;                        /* socket config */
     struct sockaddr peer_addr;                      /* peer details */
+    char *buffer;
+    char devid[HASHSIZE];
     socklen_t peer_addr_size;
-    message_t buffer;
+    payload_t *payload;
     
     /* create a socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -29,13 +32,34 @@ int main(int argc, char *argv[])
     /* connect to the server */
     connect(sockfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_in));
 
-    buffer.special_num = SPECIALNUM;
-
     /* send hello */
     printf("This is a new device\n");
     printf("Sending HELLO\n");
-    buffer.type = MT_HELLO;
-    strcpy(buffer.message, "");
-    write(sockfd, &buffer, sizeof(message_t));
-    printf("Sent\n");
+    payload = payload_create(NULL, MT_HELLO, "\0");
+    payload_send(sockfd, payload);
+    free(payload);
+
+    /* send pair */
+    printf("Sending PAIR\n");
+    payload = payload_create(NULL, MT_PAIR, "some device stats");
+    payload_send(sockfd, payload);
+    free(payload);
+
+    /* read the device id */
+    payload = payload_get(sockfd);
+    printf("Dev id: %s\n", payload -> message.value);
+    strcpy(devid, payload -> message.value);
+
+    while (1) {
+        printf(">> ");
+        size_t n;
+        getline(&buffer, &n, stdin);
+        fflush(stdin);
+
+        /* send a notification */
+        payload = payload_create(devid, MT_NOTIFICATION, buffer);
+        payload_send(sockfd, payload);
+        free(payload);
+        free(buffer);
+    }
 }

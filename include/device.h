@@ -2,7 +2,7 @@
 #define DEVICE_H
 
 /* pair a device */
-void device_pair(int devicefd);
+device_t * device_pair(int devicefd);
 
 /* return device info for a device id */
 device_t * device_get(char *device_id);

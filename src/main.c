@@ -10,6 +10,7 @@
 #include "device.h"
 #include "event.h"
 #include "interface.h"
+#include "payload.h"
 
 /* manage the connection as threads */
 void * connection_manager(void *args);
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
 
 void * connection_manager(void *args)
 {
-    message_t buffer;
+    payload_t *payload;
     device_t *device;
     int *fd, connfd;
     int was_connected = 0;
@@ -87,42 +88,45 @@ void * connection_manager(void *args)
     connfd = *fd;
 
     /* read the stream */
-    while (read(connfd, &buffer, sizeof(message_t))) {
+    while (( payload = payload_get(connfd)) != NULL) {
 
         /* check if message is intented for this app */
-        if (buffer.special_num != SPECIALNUM) {
+        if (payload -> special_num != SPECIALNUM) {
             break;
         }
 
-        switch (buffer.type) {
+        switch (payload -> message.type) {
 
             case MT_HELLO:                  /* check if device is known */
-                device = device_get(buffer.device_id);
+                device = device_get(payload -> device_id);
                 if (device) {
                     /* device known */
                     was_connected = 1;
-                    event_emit(ET_DEVICE_CONNECTED, buffer);
+                    event_emit(ET_DEVICE_CONNECTED, payload);
                     free(device);
                 } else {
                     /* device is new */
-                    event_emit(ET_DEVICE_NEW, buffer);
+                    event_emit(ET_DEVICE_NEW, payload);
                 }
                 break;
 
             case MT_PAIR:                   /* pair the device */
                 if(interface_ask_yes_no("Do you want to pair?", "Yeah!", "Nah!")) {
-                    device_pair(connfd);
-                    event_emit(ET_DEVICE_PAIR, buffer);
+                    device = device_pair(connfd);
+                    payload = payload_create(NULL, 0, device -> id);
+                    payload_send(connfd, payload);
+                    /*free(device);*/
+                    event_emit(ET_DEVICE_PAIR, payload);
                 }
                 break;
 
             case MT_NOTIFICATION:           /* device sends a notification */
                 /* check if device is paired */
-                if (!device_is_paired(buffer.device_id)) {
+                if (!device_is_paired(payload -> device_id)) {
                     continue;
                 }
                 was_connected = 1;
-                event_emit(ET_NOTIFICATION, buffer);
+                event_emit(ET_NOTIFICATION, payload);
                 break;
 
             default:
@@ -131,7 +135,7 @@ void * connection_manager(void *args)
     }
 
     /* if a device was connected, send a disconnected signal */
-    if (was_connected) event_emit(ET_DEVICE_DISCONNECTED, buffer);
+    if (was_connected) event_emit(ET_DEVICE_DISCONNECTED, payload);
 
     close(connfd);
     return NULL;

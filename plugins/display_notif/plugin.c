@@ -8,12 +8,13 @@
 /*
  * Display the notification using the libnotify library
  */
-int display_notif_send(message_t *message)
+int display_notif_send(payload_t *payload)
 {
     char name[] = "Synergy";
     notify_init(name);
 
-    NotifyNotification *notif = notify_notification_new(name, message -> message, NULL);
+    NotifyNotification *notif =
+        notify_notification_new(name, payload -> message.value, NULL);
     notify_notification_show(notif, NULL);
 
     return 1;

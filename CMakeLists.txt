@@ -36,6 +36,7 @@ set(PROJECT_SOURCES
     src/plugin.c
     src/event.c
     src/interface.c
+    src/payload.c
 )
 
 # Add subdirectory for plugins
