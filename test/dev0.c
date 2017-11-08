@@ -35,19 +35,25 @@ int main(int argc, char *argv[])
     connect(sockfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_in));
 
     /* send hello */
-    printf("This is a new device\n");
-    printf("Sending HELLO\n");
-    payload = payload_create(NULL, MT_HELLO, "\0");
+    payload = payload_create(NULL, MT_HELLO, "Phonex");
     payload_send(sockfd, payload);
     free(payload);
 
-    /* send pair */
+    /* get hello */
+    payload = payload_get(sockfd);
+    printf("Found %s on the network\n", payload -> message.value);
+
+    /* ask to send ping */
+    printf("Press enter to pair\n");
+    getchar();
+
+    /* send pairing key */
     printf("Sending PAIR\n");
-    payload = payload_create(NULL, MT_PAIR, "some device stats");
+    payload = payload_create(NULL, MT_PAIR, "thisisadeviceidfordesktop");
     payload_send(sockfd, payload);
     free(payload);
 
-    /* read the device id */
+    /* read pairing key */
     payload = payload_get(sockfd);
     printf("Dev id: %s\n", payload -> message.value);
     strcpy(devid, payload -> message.value);
@@ -59,7 +65,11 @@ int main(int argc, char *argv[])
         /* send a notification */
         payload = payload_create(devid, MT_NOTIFICATION, buffer);
         payload_send(sockfd, payload);
+        free(payload);
 
+        /* recieve an ok */
+        payload = payload_get(sockfd);
+        printf("Done: %s\n", payload -> message.value);
         free(payload);
     }
 

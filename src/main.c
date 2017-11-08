@@ -92,12 +92,14 @@ void * connection_manager(void *args)
 
         /* check if message is intented for this app */
         if (payload -> special_num != SPECIALNUM) {
+            free(payload);
             break;
         }
 
         switch (payload -> message.type) {
 
             case MT_HELLO:                  /* check if device is known */
+                printf("Got a ping from %s\n", payload -> message.value);
                 device = device_get(payload -> device_id);
                 if (device) {
                     /* device known */
@@ -108,34 +110,51 @@ void * connection_manager(void *args)
                     /* device is new */
                     event_emit(ET_DEVICE_NEW, payload);
                 }
+                payload = payload_create(NULL, MT_HELLO, "Linuxer");
+                payload_send(connfd, payload);
+                free(payload);
                 break;
 
             case MT_PAIR:                   /* pair the device */
-                if(interface_ask_yes_no("Do you want to pair?", "Yeah!", "Nah!")) {
-                    device = device_pair(connfd);
-                    payload = payload_create(NULL, 0, device -> id);
-                    payload_send(connfd, payload);
-                    /*free(device);*/
+                if(interface_ask_yes_no("Do you want to pair?",
+                            "Yeah!", "Nah!")) {
+                    device = device_pair(payload);
                     event_emit(ET_DEVICE_PAIR, payload);
+                    free(payload);
+
+                    payload = payload_create(device -> key, MT_PAIR,
+                            device -> id);
+                    payload_send(connfd, payload);
+                    free(payload);
+
+                    free(device);
                 }
                 break;
 
             case MT_NOTIFICATION:           /* device sends a notification */
-                /* check if device is paired */
-                if (!device_is_paired(payload -> device_id)) {
+                device = device_get(payload -> device_id);
+                if (device == NULL) {       /* if device not paired, reject */
                     continue;
                 }
                 was_connected = 1;
                 event_emit(ET_NOTIFICATION, payload);
+                free(payload);
+
+                payload = payload_create(device -> key, MT_OK, "OK");
+                payload_send(connfd, payload);
+                free(payload);
+
+                free(device);
                 break;
 
             default:
                 printf("%s\n", "Error!");
+                free(payload);
         }
     }
 
     /* if a device was connected, send a disconnected signal */
-    if (was_connected) event_emit(ET_DEVICE_DISCONNECTED, payload);
+    if (was_connected) event_emit(ET_DEVICE_DISCONNECTED, NULL);
 
     close(connfd);
     return NULL;

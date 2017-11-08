@@ -14,25 +14,23 @@
  * already paired
  * @param int devicefd file descriptor for the device
  */
-device_t * device_pair(int devicefd)
+device_t * device_pair(payload_t *payload)
 {
-    device_t *device;
+    device_t *device = NULL;
     char filename[20 + HASHSIZE] = "synergy/devices/";
     int fd;
 
     device = (device_t *) malloc(sizeof(device_t));
 
     /* TODO: generate a hash */
-    device -> id = (char *) malloc(HASHSIZE);
     strcpy(device -> id, "thisissomeverybighashusedasdeviceid");
+    strcpy(device -> key, payload -> message.value);
 
-    strcat(filename, device -> id);
-
-    /* save it in assoc with the device */
+    /* create a file named as the device id if not existing */
     mkdir("synergy/devices", S_IRWXU | S_IRGRP | S_IROTH);
-
-    /* create a device for it */
+    strcat(filename, device -> id);
     fd = open(filename, O_RDWR | O_CREAT | O_EXCL, S_IRUSR);
+
     if (fd == -1) {
         printf("Device exists\n");
     } else {

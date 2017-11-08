@@ -9,6 +9,7 @@ enum message_type {
     MT_PAIR,
     MT_CONNECT,
     MT_NOTIFICATION,
+    MT_OK,
 };
 
 typedef struct {
@@ -47,7 +48,8 @@ typedef int (*plugin_init_func_t)(void);
     
 /* struct for device identification */
 typedef struct {
-    char *id;
+    char id[HASHSIZE];
+    char key[HASHSIZE];
 } device_t;
 
 #endif /* end of include guard: DATATYPES_H */
