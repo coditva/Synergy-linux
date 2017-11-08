@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     /* get hello */
     payload = payload_get(sockfd);
     printf("Found %s on the network\n", payload -> message.value);
+    free(payload);
 
     /* ask to send ping */
     printf("Press enter to pair\n");
@@ -55,8 +56,24 @@ int main(int argc, char *argv[])
 
     /* read pairing key */
     payload = payload_get(sockfd);
-    printf("Dev id: %s\n", payload -> message.value);
+    printf("Dev id: %s\n", (unsigned char *) payload -> message.value);
     strcpy(devid, payload -> message.value);
+
+    /* close connection and reopen */
+    close(sockfd);
+    printf("\n\nReopening socket\n");
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    connect(sockfd, (struct sockaddr *) &addr, sizeof(struct sockaddr_in));
+
+    /* send hello */
+    payload = payload_create(devid, MT_HELLO, "Phonex");
+    payload_send(sockfd, payload);
+    free(payload);
+
+    /* get hello */
+    payload = payload_get(sockfd);
+    printf("Found %s on the network\n", payload -> message.value);
+    free(payload);
 
     while (1) {
         printf(">> ");

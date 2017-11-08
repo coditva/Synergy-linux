@@ -26,7 +26,7 @@ void payload_send(int fd, payload_t *payload)
     write(fd, payload -> message.value, payload -> message.size);
 }
 
-payload_t * payload_create(char *device_id, enum message_type type, char *message)
+payload_t * payload_create(devid_t *device_id, enum message_type type, char *message)
 {
     payload_t *buffer;
 

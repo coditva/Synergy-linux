@@ -12,7 +12,10 @@
 #define BACKLOG 10
 
 /* size of hash for device id */
-#define HASHSIZE 100
+#define HASHSIZE 65
+
+/* a key for the hash */
+#define HASHKEY "thisIsASuperSecretKey"
 
 /* maximum simultaneous devices */
 #define MAXDEVS 5

@@ -12,6 +12,9 @@ enum message_type {
     MT_OK,
 };
 
+/* the device id type */
+typedef char devid_t;
+
 /* the type which stores the messages */
 typedef struct {
     int special_num;
@@ -21,7 +24,7 @@ typedef struct {
         char *value;
     } message;
     struct {
-        char id[HASHSIZE];
+        devid_t id[HASHSIZE];
         char *name;
     } device;
 } payload_t;
@@ -52,8 +55,8 @@ typedef int (*plugin_init_func_t)(void);
     
 /* struct for device identification */
 typedef struct {
-    char id[HASHSIZE];
-    char key[HASHSIZE];
+    devid_t id[HASHSIZE];
+    devid_t key[HASHSIZE];
     char name[MAXNAME];
 } device_t;
 

@@ -142,7 +142,7 @@ void * connection_manager(void *args)
                 break;
 
             case MT_NOTIFICATION:           /* device sends a notification */
-                device = device_get(payload -> device.id);
+                device = device_get(devname);
                 if (device == NULL) {       /* if device not paired, reject */
                     continue;
                 }
