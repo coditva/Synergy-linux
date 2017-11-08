@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "config.h"
 #include "server.h"
@@ -83,9 +84,12 @@ void * connection_manager(void *args)
     device_t *device;
     int *fd, connfd;
     int was_connected = 0;
+    char *devname;
 
     fd = args;
     connfd = *fd;
+
+    devname = (char *) malloc(MAXNAME);
 
     /* read the stream */
     while (( payload = payload_get(connfd)) != NULL) {
@@ -96,11 +100,17 @@ void * connection_manager(void *args)
             break;
         }
 
+        /* attach device name to the payload */
+        if (devname != NULL) {
+            payload -> device.name = devname;
+        }
+
         switch (payload -> message.type) {
 
             case MT_HELLO:                  /* check if device is known */
                 printf("Got a ping from %s\n", payload -> message.value);
-                device = device_get(payload -> device_id);
+                strcpy(devname, payload -> message.value);
+                device = device_get(payload -> device.id);
                 if (device) {
                     /* device known */
                     was_connected = 1;
@@ -118,7 +128,7 @@ void * connection_manager(void *args)
             case MT_PAIR:                   /* pair the device */
                 if(interface_ask_yes_no("Do you want to pair?",
                             "Yeah!", "Nah!")) {
-                    device = device_pair(payload);
+                    device = device_pair(devname, payload);
                     event_emit(ET_DEVICE_PAIR, payload);
                     free(payload);
 
@@ -132,7 +142,7 @@ void * connection_manager(void *args)
                 break;
 
             case MT_NOTIFICATION:           /* device sends a notification */
-                device = device_get(payload -> device_id);
+                device = device_get(payload -> device.id);
                 if (device == NULL) {       /* if device not paired, reject */
                     continue;
                 }

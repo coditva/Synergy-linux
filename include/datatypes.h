@@ -12,6 +12,7 @@ enum message_type {
     MT_OK,
 };
 
+/* the type which stores the messages */
 typedef struct {
     int special_num;
     struct {
@@ -19,7 +20,10 @@ typedef struct {
         enum message_type type;
         char *value;
     } message;
-    char device_id[HASHSIZE];
+    struct {
+        char id[HASHSIZE];
+        char *name;
+    } device;
 } payload_t;
 
 
@@ -50,6 +54,7 @@ typedef int (*plugin_init_func_t)(void);
 typedef struct {
     char id[HASHSIZE];
     char key[HASHSIZE];
+    char name[MAXNAME];
 } device_t;
 
 #endif /* end of include guard: DATATYPES_H */

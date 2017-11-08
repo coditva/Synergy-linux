@@ -17,4 +17,7 @@
 /* maximum simultaneous devices */
 #define MAXDEVS 5
 
+/* maximum length of device name */
+#define MAXNAME 100
+
 #endif /* end of include guard: CONFIG_H */

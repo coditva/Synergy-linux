@@ -14,7 +14,7 @@
  * already paired
  * @param int devicefd file descriptor for the device
  */
-device_t * device_pair(payload_t *payload)
+device_t * device_pair(char *device_name, payload_t *payload)
 {
     device_t *device = NULL;
     char filename[20 + HASHSIZE] = "synergy/devices/";
@@ -25,6 +25,7 @@ device_t * device_pair(payload_t *payload)
     /* TODO: generate a hash */
     strcpy(device -> id, "thisissomeverybighashusedasdeviceid");
     strcpy(device -> key, payload -> message.value);
+    strcpy(device -> name, device_name);
 
     /* create a file named as the device id if not existing */
     mkdir("synergy/devices", S_IRWXU | S_IRGRP | S_IROTH);

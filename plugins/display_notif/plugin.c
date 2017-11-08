@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <libnotify/notify.h>
+#include <string.h>
 
 #include "datatypes.h"
 #include "event.h"
@@ -10,7 +11,8 @@
  */
 int display_notif_send(payload_t *payload)
 {
-    char name[] = "Synergy";
+    char name[MAXNAME];
+    strcpy(name, payload -> device.name);
     notify_init(name);
 
     NotifyNotification *notif =

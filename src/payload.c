@@ -37,7 +37,7 @@ payload_t * payload_create(char *device_id, enum message_type type, char *messag
     buffer -> message.size = strlen(message) + 1;
     buffer -> message.value = (char *) malloc(buffer -> message.size);
     strcpy(buffer -> message.value, message);
-    if (device_id != NULL) strcpy(buffer -> device_id, device_id);
+    if (device_id != NULL) strcpy(buffer -> device.id, device_id);
 
     return buffer;
 }
