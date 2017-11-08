@@ -14,9 +14,6 @@
 /* size of hash for device id */
 #define HASHSIZE 100
 
-/* maximum size for message */
-#define MAXMESSAGE 100
-
 /* maximum simultaneous devices */
 #define MAXDEVS 5
 

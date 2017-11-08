@@ -10,6 +10,9 @@
 #include "datatypes.h"
 #include "payload.h"
 
+/* maximum size for message */
+#define MAXMESSAGE 100
+
 int main(int argc, char *argv[])
 {
     int sockfd;
