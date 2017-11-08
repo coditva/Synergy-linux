@@ -43,6 +43,7 @@ set(PROJECT_SOURCES
 add_subdirectory("plugins/get_notif")
 add_subdirectory("plugins/logger")
 add_subdirectory("plugins/display_notif")
+add_subdirectory("plugins/display_events")
 
 # Add executable
 add_executable (${PROJECT_NAME} ${PROJECT_SOURCES})
