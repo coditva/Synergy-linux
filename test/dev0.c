@@ -12,13 +12,12 @@
 
 int main(int argc, char *argv[])
 {
-    int sockfd, connfd;
+    int sockfd;
     struct sockaddr_in addr;                        /* socket config */
-    struct sockaddr peer_addr;                      /* peer details */
-    char *buffer;
+    char buffer[MAXMESSAGE];
     char devid[HASHSIZE];
-    socklen_t peer_addr_size;
     payload_t *payload;
+    size_t n;
     
     /* create a socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -52,14 +51,14 @@ int main(int argc, char *argv[])
 
     while (1) {
         printf(">> ");
-        size_t n;
-        getline(&buffer, &n, stdin);
-        fflush(stdin);
+        fgets(buffer, MAXMESSAGE, stdin);
 
         /* send a notification */
         payload = payload_create(devid, MT_NOTIFICATION, buffer);
         payload_send(sockfd, payload);
+
         free(payload);
-        free(buffer);
     }
+
+    close(sockfd);
 }
